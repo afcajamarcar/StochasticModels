@@ -5,11 +5,10 @@
 # Authors
 # Jeisson Andres Prieto Velandia
 # Andres Felipe Cajamarca Rojas
-# Juan Felipe Arando Manrique
+# Juan Felipe Arango Manrique
 ########################################
 from resize import resizeSignature
 import matplotlib.pyplot as plt
-from resizeimage import resizeimage
 
 def filter(grayScaleSignature):
     filteredSignature = grayScaleSignature < 128
@@ -19,9 +18,8 @@ img = filter(resizeSignature('Signature.jpg'))
 
 plt.imshow(img)
 
-# plt.show()
+plt.show()
 
-print resizeimage.path
 
 
 
