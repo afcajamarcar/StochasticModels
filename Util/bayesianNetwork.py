@@ -8,14 +8,15 @@
 # Juan Felipe Arango Manrique
 ########################################
 from resize import resizeSignature
+from gaussianSmoothing import gaussianBlur
 import matplotlib.pyplot as plt
 import numpy as np
 
 def filter(grayScaleSignature):
-    filteredSignature = grayScaleSignature < 128
+    filteredSignature = grayScaleSignature < 50
     return filteredSignature.astype(int)
 
-img = filter(resizeSignature('Signature.jpg'))
+img = resizeSignature('Signature.jpg')
 
 def centroid(img):
     ones = []
@@ -30,9 +31,18 @@ def centroid(img):
         sumx+=item[1]
     meanx = sumx/len(ones)
     meany = sumy/len(ones)
+
     return (meanx, meany)
-print centroid(img)
-plt.imshow(img)
+
+
+imgSmooted = gaussianBlur(2,2.5,img)
+print imgSmooted[10]
+imgFiltered = filter(imgSmooted)
+
+print centroid(imgFiltered)
+print imgFiltered
+
+plt.imshow(imgFiltered)
 
 plt.show()
 

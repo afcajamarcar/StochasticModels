@@ -15,6 +15,8 @@ from resizeimage import resizeimage
 import cv2
 
 
+
+
 # Read a image, convert to gray scale and resized.
 def resizeSignature(nameSignature):
     signatureArray = nameSignature.split('.')
