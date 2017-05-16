@@ -13,11 +13,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
 
+
 def filter(grayScaleSignature):
     filteredSignature = grayScaleSignature < 64
     return filteredSignature.astype(int)
 
-img = resizeSignature('Signature.jpg')
+img = resizeSignature('Signature_2.jpg')
 
 def calculateBlackPoints(img):
     ones = []
@@ -25,8 +26,9 @@ def calculateBlackPoints(img):
         for y in xrange(len(img[0])):
             if x > 3 and y > 3 and x < (len(img)-3) and y < (len(img[0])-3) and img[x, y] == 1:
                 ones.append((x, y))
-
     return ones
+
+
 
 
 def centroid(img):

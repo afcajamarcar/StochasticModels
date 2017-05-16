@@ -23,7 +23,7 @@ def resizeSignature(nameSignature):
 
     with open("../Signatures/" + nameSignature, 'r+b') as f:
         with Image.open(f) as image:
-            cover = resizeimage.resize_thumbnail(image, [500, 500])
+            cover = resizeimage.resize_contain(image, [500, 500])
             cover.save("../Signatures/" + signatureArray[0] + '_resized.' + signatureArray[1], image.format)
 
     img = cv2.imread("../Signatures/" +  signatureArray[0] + '_resized.' + signatureArray[1], 0)
