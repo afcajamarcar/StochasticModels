@@ -12,6 +12,7 @@ from gaussianSmoothing import gaussianBlur
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
+from scipy.stats import kurtosis
 
 
 def filter(grayScaleSignature):
@@ -48,6 +49,10 @@ def calculateDensePoints(img, numberDensePoints=30):
     kmeansDensePoints = KMeans(n_clusters=numberDensePoints, random_state=0, n_jobs=-1).fit(positions)
     return kmeansDensePoints.cluster_centers_
 
+#Calculates Fisher Kurtosis by default, returns an array (it could return Pearson's measure of kurtosis)
+def calculateKurtosis(img):
+    return kurtosis(img)
+
 
 # Image filtering
 imgSmooted = gaussianBlur(2,3,img)
@@ -64,6 +69,8 @@ plt.plot(list1, list2, "ro")
 # Calculate the representative points of a signature
 densePoints = calculateDensePoints(imgFiltered)
 
+
+print calculateKurtosis(imgFiltered)
 # For print in better way
 # densePoints[:,[0, 1]] = densePoints[:,[1, 0]]
 # plt.plot(list1, list2, "ro")
