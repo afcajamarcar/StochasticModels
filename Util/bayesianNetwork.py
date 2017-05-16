@@ -7,6 +7,8 @@
 # Andres Felipe Cajamarca Rojas
 # Juan Felipe Arango Manrique
 ########################################
+from matplotlib import transforms
+
 from resize import resizeSignature
 from gaussianSmoothing import gaussianBlur
 import matplotlib.pyplot as plt
@@ -22,10 +24,10 @@ def filter(grayScaleSignature):
 
 def calculateBlackPoints(img):
     ones = []
-    for x in xrange(len(img)):
-        for y in xrange(len(img[0])):
-            if x > 3 and y > 3 and x < (len(img)-3) and y < (len(img[0])-3) and img[x, y] == 1:
-                ones.append((x, y))
+    for y in xrange(len(img)):
+        for x in xrange(len(img[0])):
+            if x > 3 and y > 3 and x < (len(img[0])-3) and y < (len(img)-3) and img[y, x] == 1:
+                ones.append((y, x))
     return ones
 
 def centroid(blackPointsImg):
@@ -46,15 +48,17 @@ def calculateDensePoints(blackPointsImg, numberDensePoints=30):
 
 
 #Calculates Fisher Kurtosis by default, returns an array (it could return Pearson's measure of kurtosis)
-def calculateKurtosis(img):
-    return kurtosis(img)
+def calculateKurtosis(blackPointsImg):
+    listY = [y[0] for y in blackPointsImg]
+    listX = [x[1] for x in blackPointsImg]
+    matrix = np.array([listY, listX])
+
+    return kurtosis(matrix.T)
 
 
 def skewDetection(img):
     middleLeft = img[ : , :len(img)/2]
     middleRight = img[ : , (len(img)/2)+1:]
-
-    print middleLeft.shape, middleRight.shape
 
     centerMassLeft = centroid(calculateBlackPoints(middleLeft))
     centerMassRight = centroid(calculateBlackPoints(middleRight))
@@ -72,9 +76,13 @@ def skewDetection(img):
 
 if __name__ == "__main__":
 
+    # first of all, the base transformation of the data points is needed
+    base = plt.gca().transData
+    rot = transforms.Affine2D().rotate_deg(270)
+
     img = resizeSignature('Signature.jpg')
     # Image filtering
-    imgSmooted = gaussianBlur(2, 1, img)
+    imgSmooted = gaussianBlur(2, 10, img)
     imgFiltered = filter(imgSmooted)
 
 
@@ -82,10 +90,8 @@ if __name__ == "__main__":
     blackPoints = calculateBlackPoints(imgFiltered)
 
     # Calculate the center of mass
-    print blackPoints
     centerMass = centroid(blackPoints)
-
-    print centerMass
+    print "CenterMass (row, col)", centerMass
 
     # Calculate the representative points of a signature
     densePoints = calculateDensePoints(blackPoints)
@@ -94,18 +100,18 @@ if __name__ == "__main__":
     # densePoints[:,[0, 1]] = densePoints[:,[1, 0]]
     # plt.plot(list1, list2, "ro")
     # Just for print the matrix
-    list1 = [x[0] for x in blackPoints]
-    list2 = [x[1] for x in blackPoints]
-    plt.plot(list1, list2, "ro")
+    listY = [y[0] for y in blackPoints]
+    listX = [x[1] for x in blackPoints]
+    plt.plot(listY, listX, "ro", transform=rot+base)
 
     # Print Center of mass
-    plt.plot(centerMass[1], centerMass[0], "^")
+    plt.plot(centerMass[0], centerMass[1], "^", transform=rot+base)
 
     # Print dense points
     densePoints = densePoints.T
-    plt.plot(densePoints[0], densePoints[1], "g+")
+    plt.plot(densePoints[0], densePoints[1], "g+", transform=rot+base)
 
-    print calculateKurtosis(imgFiltered)
+    print "Kurtosis (row, col)",calculateKurtosis(blackPoints)
 
     # Print skew detection
     testSkew = skewDetection(imgFiltered)
@@ -114,6 +120,8 @@ if __name__ == "__main__":
     #plt.plot([testSkewLeft[1], testSkewRight[1]], [testSkewLeft[0], testSkewRight[0]], 'k')
     # plt.plot([testSkewLeft[1], testSkewLeft[1]], [testSkewLeft[0], testSkewRight[0]], 'k')
     print "Angle signature", testSkew
+
+
 
     plt.show()
 
