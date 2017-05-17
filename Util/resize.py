@@ -7,26 +7,30 @@
 # Andres Felipe Cajamarca Rojas
 # Juan Felipe Arango Manrique
 ########################################
-
-
-
+import scipy
 from PIL import Image
 from resizeimage import resizeimage
-import cv2
+import numpy as np
 
 
 
 
 # Read a image, convert to gray scale and resized.
-def resizeSignature(nameSignature):
-    signatureArray = nameSignature.split('.')
+# When train is true, read of train dataset.
+# When genuine is true, read of genuine signatures.
+def resizeSignature(nameSignature, train=True, genuine=True):
 
-    with open("../Signatures/" + nameSignature, 'r+b') as f:
-        with Image.open(f) as image:
-            cover = resizeimage.resize_contain(image, [500, 500])
-            cover.save("../Signatures/" + signatureArray[0] + '_resized.' + signatureArray[1], image.format)
+    if train and genuine:
+        with open("../TrainingSet/Offline Genuine/" + nameSignature, 'r+b') as f:
+            with Image.open(f) as image:
+                cover = resizeimage.resize_contain(image, [500, 500]).convert('L')
+                cover = np.asanyarray(cover)
+                #cover = scipy.misc.imresize(image, (500,500), map()ode='L')
+    elif train and not genuine:
+        with open("../TrainingSet/Offline Forgeries/" + nameSignature, 'r+b') as f:
+            with Image.open(f) as image:
+                cover = resizeimage.resize_contain(image, [500, 500]).convert('L')
+                cover = np.asanyarray(cover)
 
-    img = cv2.imread("../Signatures/" +  signatureArray[0] + '_resized.' + signatureArray[1], 0)
-
-    return img
+    return cover
 

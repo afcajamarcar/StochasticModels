@@ -80,9 +80,11 @@ if __name__ == "__main__":
     base = plt.gca().transData
     rot = transforms.Affine2D().rotate_deg(270)
 
-    img = resizeSignature('Signature.jpg')
+    img = resizeSignature('002_12.PNG')
+
+    print img
     # Image filtering
-    imgSmooted = gaussianBlur(2, 10, img)
+    imgSmooted = gaussianBlur(2, 1, img)
     imgFiltered = filter(imgSmooted)
 
 
@@ -120,8 +122,6 @@ if __name__ == "__main__":
     #plt.plot([testSkewLeft[1], testSkewRight[1]], [testSkewLeft[0], testSkewRight[0]], 'k')
     # plt.plot([testSkewLeft[1], testSkewLeft[1]], [testSkewLeft[0], testSkewRight[0]], 'k')
     print "Angle signature", testSkew
-
-
 
     plt.show()
 
