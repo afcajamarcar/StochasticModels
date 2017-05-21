@@ -12,25 +12,21 @@ from PIL import Image
 from resizeimage import resizeimage
 import numpy as np
 
-
-
-
 # Read a image, convert to gray scale and resized.
 # When train is true, read of train dataset.
 # When genuine is true, read of genuine signatures.
 def resizeSignature(nameSignature, train=True, genuine=True):
 
     if train and genuine:
-        with open("../TrainingSet/Offline Genuine/" + nameSignature, 'r+b') as f:
+        with open(nameSignature, 'r+b') as f:
             with Image.open(f) as image:
                 cover = resizeimage.resize_contain(image, [500, 500]).convert('L')
                 cover = np.asanyarray(cover)
                 #cover = scipy.misc.imresize(image, (500,500), map()ode='L')
     elif train and not genuine:
-        with open("../TrainingSet/Offline Forgeries/" + nameSignature, 'r+b') as f:
+        with open(nameSignature, 'r+b') as f:
             with Image.open(f) as image:
                 cover = resizeimage.resize_contain(image, [500, 500]).convert('L')
                 cover = np.asanyarray(cover)
-
     return cover
 
