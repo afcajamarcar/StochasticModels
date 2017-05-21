@@ -15,8 +15,8 @@ import numpy as np
 # Read a image, convert to gray scale and resized.
 # When train is true, read of train dataset.
 # When genuine is true, read of genuine signatures.
-def resizeSignature(nameSignature, train=True, genuine=True):
 
+def resizeSignature(nameSignature, train=True, genuine=True):
     if train and genuine:
         with open(nameSignature, 'r+b') as f:
             with Image.open(f) as image:
@@ -30,3 +30,8 @@ def resizeSignature(nameSignature, train=True, genuine=True):
                 cover = np.asanyarray(cover)
     return cover
 
+def resizeOriginal(nameSignature):
+    with open(nameSignature, 'r+b') as f:
+        with Image.open(f) as image:
+            cover = resizeimage.resize_contain(image, [500, 500]).convert('L')
+    return cover

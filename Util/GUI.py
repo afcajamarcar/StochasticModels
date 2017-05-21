@@ -1,10 +1,14 @@
-from resize import resizeSignature
 from matplotlib import transforms
-from Tkinter import Tk
+from Tkinter import *
 from tkFileDialog import askopenfilename
+from matplotlib.patches import Ellipse
+from PIL import Image
+
+import resize as rz
+import sys
 import matplotlib.pyplot as plt
 import bayesianNetwork as bN
-from matplotlib.patches import Ellipse
+import numpy as np
 
 def drawEllipse(img):
     listY = [y[0] for y in img]
@@ -13,7 +17,34 @@ def drawEllipse(img):
     b = max(listY) - min(listY)
     return a,b
 
+def concat_images(imga, imgb):
+    """
+    Combines two color image ndarrays side-by-side.
+    """
+    ha,wa = imga.shape[:2]
+    hb,wb = imgb.shape[:2]
+    max_height = np.max([ha, hb])
+    total_width = wa+wb
+    new_img = np.zeros(shape=(max_height, total_width, 3), dtype=np.uint8)
+    new_img[:ha,:wa]=imga
+    new_img[:hb,wa:wa+wb]=imgb
+    return new_img
+
+def concat_n_images(image_path_list):
+    """
+    Combines N color images from a list of image paths.
+    """
+    output = None
+    for i, img_path in enumerate(image_path_list):
+        img = plt.imread(img_path)[:,:,:3]
+        if i==0:
+            output = img
+        else:
+            output = concat_images(output, img)
+    return output
+
 if __name__ == "__main__":
+
 
     # first of all, the base transformation of the data points is needed
     base = plt.gca().transData
@@ -22,7 +53,7 @@ if __name__ == "__main__":
     #Input File
     Tk().withdraw()  # we don't want a full GUI, so keep the root window from appearing
     filename = askopenfilename()
-    img = resizeSignature(filename)
+    img = rz.resizeSignature(filename)
 
     # Image filtering
     imgSmooted = bN.gaussianBlur(2, 1, img)
@@ -56,6 +87,7 @@ if __name__ == "__main__":
     # Print skew detection
     testSkew = bN.skewDetection(imgFiltered)
 
+    plt.axis('off')
     subplot = plt.subplot()
     b, a = drawEllipse(blackPoints)
     ell = Ellipse((centerMass[0], centerMass[1]*-1), b+10, a+10, edgecolor='black', facecolor='none',linewidth=5)
@@ -65,4 +97,26 @@ if __name__ == "__main__":
     # plt.plot([testSkewLeft[1], testSkewLeft[1]], [testSkewLeft[0], testSkewRight[0]], 'k')
     print "Angle signature", testSkew
 
+    plt.savefig("test.PNG")
+
+    plt.axis('on')
+    original = rz.resizeOriginal(filename)
+    scanned = Image.open('test.PNG')
+    images = [original,scanned ]
+
+    #images = map(Image.open, [original,'test.jpg'])
+    widths, heights = zip(*(i.size for i in images))
+
+    total_width = sum(widths)
+    max_height = max(heights)
+
+    new_im = Image.new('RGB', (total_width, max_height))
+
+    x_offset = 0
+    for im in images:
+        new_im.paste(im, (x_offset, 0))
+        x_offset += im.size[0]
+
+    subplot.set_xlabel('Original Image                                                                                                                                           Scanned image')
+    plt.imshow(new_im)
     plt.show()
