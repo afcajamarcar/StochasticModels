@@ -3,9 +3,8 @@ from Tkinter import *
 from tkFileDialog import askopenfilename
 from matplotlib.patches import Ellipse
 from PIL import Image
-
+from matplotlib.axes import Axes
 import resize as rz
-import sys
 import matplotlib.pyplot as plt
 import bayesianNetwork as bN
 import numpy as np
@@ -44,7 +43,6 @@ def concat_n_images(image_path_list):
     return output
 
 if __name__ == "__main__":
-
 
     # first of all, the base transformation of the data points is needed
     base = plt.gca().transData
@@ -86,37 +84,44 @@ if __name__ == "__main__":
 
     # Print skew detection
     testSkew = bN.skewDetection(imgFiltered)
-
     plt.axis('off')
+
+    # Plot Ellipse
     subplot = plt.subplot()
     b, a = drawEllipse(blackPoints)
     ell = Ellipse((centerMass[0], centerMass[1]*-1), b+10, a+10, edgecolor='black', facecolor='none',linewidth=5)
     subplot.add_patch(ell)
+
     # plt.plot([y positions of the points], [x positions of the points])
     # plt.plot([testSkewLeft[1], testSkewRight[1]], [testSkewLeft[0], testSkewRight[0]], 'k')
     # plt.plot([testSkewLeft[1], testSkewLeft[1]], [testSkewLeft[0], testSkewRight[0]], 'k')
     print "Angle signature", testSkew
 
-    plt.savefig("test.PNG")
-
+    #Save Scanned Signature
+    plt.savefig("test.PNG",dpi = 700)
     plt.axis('on')
+
+    #Collage 2 images
     original = rz.resizeOriginal(filename)
     scanned = Image.open('test.PNG')
-    images = [original,scanned ]
-
-    #images = map(Image.open, [original,'test.jpg'])
+    sn = rz.resizeScanned(scanned)
+    images = [original,sn]
     widths, heights = zip(*(i.size for i in images))
-
     total_width = sum(widths)
     max_height = max(heights)
-
     new_im = Image.new('RGB', (total_width, max_height))
-
     x_offset = 0
     for im in images:
         new_im.paste(im, (x_offset, 0))
         x_offset += im.size[0]
 
-    subplot.set_xlabel('Original Image                                                                                                                                           Scanned image')
+    #Text
+    data = "CenterMass= {0}\nEccentricity= {1}\nKurtosis= {2}\nAngle Signature= {3}".format(centerMass, eccentricity, bN.calculateKurtosis(blackPoints), testSkew)
+    plt.text(-160, -20, data, fontsize=12)
+
+    #Label
+    subplot.set_xlabel('Original Signature                                                                                                                                           Scanned Signature')
+
+    #Show graphics
     plt.imshow(new_im)
     plt.show()

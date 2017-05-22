@@ -35,3 +35,7 @@ def resizeOriginal(nameSignature):
         with Image.open(f) as image:
             cover = resizeimage.resize_contain(image, [500, 500]).convert('L')
     return cover
+
+def resizeScanned(image):
+    cover = resizeimage.resize_contain(image, [500, 500])
+    return cover
