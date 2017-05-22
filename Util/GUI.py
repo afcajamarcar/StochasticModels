@@ -122,6 +122,10 @@ if __name__ == "__main__":
     #Label
     subplot.set_xlabel('Original Signature                                                                                                                                           Scanned Signature')
 
+    #FullScreen
+    mng = plt.get_current_fig_manager()
+    mng.resize(*mng.window.maxsize())
+
     #Show graphics
     plt.imshow(new_im)
     plt.show()
