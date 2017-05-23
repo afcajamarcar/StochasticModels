@@ -8,7 +8,6 @@
 # Juan Felipe Arango Manrique
 ########################################
 
-from gaussianSmoothing import gaussianBlur
 import numpy as np
 import operator
 from sklearn.cluster import KMeans
@@ -39,11 +38,10 @@ def centroid(blackPointsImg):
 
     return (round(meanx), round(meany))
 
-def calculateDensePoints(blackPointsImg, numberDensePoints=30):
+def calculateDensePoints(blackPointsImg, numberDensePoints=20):
     positions = blackPointsImg
-    kmeansDensePoints = KMeans(n_clusters=numberDensePoints, random_state=0, n_jobs=-1).fit(positions)
+    kmeansDensePoints = KMeans(n_clusters=numberDensePoints, n_jobs=-1).fit(positions)
     return kmeansDensePoints.cluster_centers_
-
 
 #Calculates Fisher Kurtosis by default, returns an array (it could return Pearson's measure of kurtosis)
 def calculateKurtosis(blackPointsImg):

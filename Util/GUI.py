@@ -1,3 +1,13 @@
+########################################
+# Universidad Nacional de Colombia
+# Sthochastic Models
+########################################
+# Authors
+# Jeisson Andres Prieto Velandia
+# Andres Felipe Cajamarca Rojas
+# Juan Felipe Arango Manrique
+########################################
+
 from matplotlib import transforms
 from Tkinter import *
 from tkFileDialog import askopenfilename
@@ -7,6 +17,7 @@ from matplotlib.axes import Axes
 import resize as rz
 import matplotlib.pyplot as plt
 import bayesianNetwork as bN
+import gaussianSmoothing as GaussS
 import numpy as np
 
 def drawEllipse(img):
@@ -54,7 +65,7 @@ if __name__ == "__main__":
     img = rz.resizeSignature(filename)
 
     # Image filtering
-    imgSmooted = bN.gaussianBlur(2, 1, img)
+    imgSmooted = GaussS.gaussianBlur(1, 0.5, img)
     imgFiltered = bN.filter(imgSmooted)
 
     # Calculate the ones in the matrix.
