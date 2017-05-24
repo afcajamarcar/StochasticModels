@@ -79,7 +79,7 @@ if __name__ == "__main__":
     eccentricity = bN.calculateEccentricity(blackPoints)
     print "Eccentricity", eccentricity
     # Calculate the representative points of a signature
-    densePoints = bN.calculateDensePoints(blackPoints)
+    densePoints = bN.calculateDensePoints(blackPoints   )
 
     listY = [y[0] for y in blackPoints]
     listX = [x[1] for x in blackPoints]

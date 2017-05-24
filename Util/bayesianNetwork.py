@@ -41,7 +41,7 @@ def centroid(blackPointsImg):
 def calculateDensePoints(blackPointsImg, numberDensePoints=20):
     positions = blackPointsImg
     kmeansDensePoints = KMeans(n_clusters=numberDensePoints, n_jobs=-1).fit(positions)
-    return kmeansDensePoints.cluster_centers_
+    return np.sort(kmeansDensePoints.cluster_centers_, axis=0)
 
 #Calculates Fisher Kurtosis by default, returns an array (it could return Pearson's measure of kurtosis)
 def calculateKurtosis(blackPointsImg):
@@ -75,3 +75,43 @@ def skewDetection(img):
         return np.rad2deg((ang1 - ang2) % (2 * np.pi))
 
     return angle_between(centerMassLeft, centerMassRight)
+
+
+def calculateGradient(blackPoints, imageShape):
+    # Find gradient in a grid 4x4
+    fixedForGradient = np.zeros(imageShape)
+    for blPoint in blackPoints:
+        fixedForGradient[blPoint[0]][blPoint[1]] = 1
+
+    matrixGradient = []
+    for i in np.split(fixedForGradient, 4):
+        tmpRow = []
+        for j in np.split(i, 4, axis=1):
+            gradient = np.gradient(j)
+            tmpRow.append((np.trace(gradient[0]), np.trace(gradient[1])))
+
+        matrixGradient.append(tmpRow)
+
+    # Just the important gradients of a signature
+    return matrixGradient[1:3]
+
+
+def calculatePressure(imageGrayScale):
+
+    matrixPresure = []
+    for i in np.split(imageGrayScale, 4):
+        tmpRow = []
+        for j in np.split(i, 4, axis=1):
+            findPressure = []
+            for row in j:
+                for col in row:
+                    if col != 255:
+                        findPressure.append(col)
+
+            tmpRow.append(round(np.mean(findPressure),3))
+
+        matrixPresure.append(tmpRow)
+
+    # Just the important gradients of a signature
+    return matrixPresure
+
