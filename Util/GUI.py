@@ -100,7 +100,7 @@ if __name__ == "__main__":
     # Plot Ellipse
     subplot = plt.subplot()
     b, a = drawEllipse(blackPoints)
-    ell = Ellipse((centerMass[0], centerMass[1]*-1), b+10, a+10, edgecolor='black', facecolor='none',linewidth=5)
+    ell = Ellipse((centerMass[1], centerMass[0]*-1), b+10, a+10, edgecolor='black', facecolor='none',linewidth=5)
     subplot.add_patch(ell)
 
     # plt.plot([y positions of the points], [x positions of the points])
