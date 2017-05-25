@@ -60,8 +60,7 @@ def calculateEccentricity(img):
     listX = [x[1] for x in img]
     a = max(listX) - min(listX)
     b = max(listY)- min(listY)
-    eccentricity = math.sqrt((a*a)-(b*b))/a
-    return eccentricity
+    return math.sqrt((a*a)-(b*b))/a if b < a else math.sqrt((a * a) + (b * b)) / a
 
 def skewDetection(img):
     middleLeft = img[ : , :len(img)/2]

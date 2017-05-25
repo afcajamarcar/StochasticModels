@@ -22,10 +22,11 @@ vectorTarget = []
 
 with open('learningBayesian.csv') as f:
     reader = csv.reader(f)
-    reader.next()
+
+    print len(reader.next())
     for i in reader:
         #matrixData.append(map(float,  i[2:len(i)-5]))
-        matrixData.append(map(float, i[2:6] + i[56:len(i) - 1]))
+        matrixData.append(map(float, i[2:5] + i[25:len(i) - 1]))
         vectorTarget.append(int(i[len(i)-1]))
 
 
@@ -34,6 +35,40 @@ print matrixData[0]
 vectorTarget = np.array(vectorTarget)
 print vectorTarget
 
+
+
+##### Support Vector machine
+
+asdsada = svm.SVC(kernel='rbf', C=1)
+
+X_train, X_test, y_train, y_test = train_test_split(matrixData, vectorTarget, test_size=0.2, random_state=0)
+
+asdsada.fit(X_train, y_train)
+
+y_predict = asdsada.predict(X_test)
+
+print asdsada.score(X_test, y_test)
+
+print accuracy_score(y_test, y_predict)
+
+
+###################### Naive Bayes
+naiveClassifier = GaussianNB().fit(X_train, y_train)
+
+y_predict_Naive = naiveClassifier.predict(X_test)
+
+print accuracy_score(y_test, y_predict_Naive)
+
+
+######## Crossvalidation
+scores = cross_val_score(asdsada, matrixData, vectorTarget, cv=5)
+print("Accuracy SVM: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+
+scores = cross_val_score(naiveClassifier, matrixData, vectorTarget, cv=5)
+print("Accuracy Naive: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+
+
+'''
 clasifier = GaussianNB().fit(matrixData, vectorTarget)
 
 y_predict = clasifier.predict(matrixData)
@@ -53,3 +88,4 @@ clf = svm.SVC()
 
 scores = cross_val_score(cls, matrixData, vectorTarget, cv=5)
 print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+'''
