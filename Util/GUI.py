@@ -65,7 +65,7 @@ if __name__ == "__main__":
     img = rz.resizeSignature(filename)
 
     # Image filtering
-    imgSmooted = GaussS.gaussianBlur(1, 0.5, img)
+    imgSmooted = GaussS.gaussianBlur(1, 0.55, img)
     imgFiltered = bN.filter(imgSmooted)
 
     # Calculate the ones in the matrix.

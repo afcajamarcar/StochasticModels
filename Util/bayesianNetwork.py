@@ -28,20 +28,24 @@ def calculateBlackPoints(img):
     return ones
 
 def centroid(blackPointsImg):
-    sumx = 0
-    sumy = 0
-    for item in blackPointsImg:
-        sumy += item[0]
-        sumx += item[1]
-    meanx = sumx/float(len(blackPointsImg))
-    meany = sumy/float(len(blackPointsImg))
-
+    meanx = np.mean([item[0] for item in blackPointsImg])
+    meany = np.mean([item[1] for item in blackPointsImg])
     return (round(meanx), round(meany))
 
-def calculateDensePoints(blackPointsImg, numberDensePoints=20):
+def calculateDensePoints(blackPointsImg, numberDensePoints=10):
     positions = blackPointsImg
     kmeansDensePoints = KMeans(n_clusters=numberDensePoints, n_jobs=-1).fit(positions)
-    return np.sort(kmeansDensePoints.cluster_centers_, axis=0)
+    densePoints = kmeansDensePoints.cluster_centers_
+    ind = np.argsort(densePoints[:, 0])
+
+    # Switch the ordering (so it's decreasing order)
+    rind = ind[::-1]
+
+    # Return the matrix with rows in the specified order
+    densePoints = densePoints[rind]
+
+    return densePoints
+
 
 #Calculates Fisher Kurtosis by default, returns an array (it could return Pearson's measure of kurtosis)
 def calculateKurtosis(blackPointsImg):
@@ -84,24 +88,24 @@ def calculateGradient(blackPoints, imageShape):
         fixedForGradient[blPoint[0]][blPoint[1]] = 1
 
     matrixGradient = []
-    for i in np.split(fixedForGradient, 4):
+    for i in np.split(fixedForGradient, 5):
         tmpRow = []
-        for j in np.split(i, 4, axis=1):
+        for j in np.split(i, 5, axis=1):
             gradient = np.gradient(j)
             tmpRow.append((np.trace(gradient[0]), np.trace(gradient[1])))
 
         matrixGradient.append(tmpRow)
 
     # Just the important gradients of a signature
-    return matrixGradient[1:3]
+    return matrixGradient[1:4]
 
 
 def calculatePressure(imageGrayScale):
 
     matrixPresure = []
-    for i in np.split(imageGrayScale, 4):
+    for i in np.split(imageGrayScale, 5):
         tmpRow = []
-        for j in np.split(i, 4, axis=1):
+        for j in np.split(i, 5, axis=1):
             findPressure = []
             for row in j:
                 for col in row:
