@@ -43,8 +43,12 @@ if __name__ == "__main__":
     #################################################
     allFiles = next(os.walk("../Questioned(1287)"))[1]
 
-    for files in allFiles:
+
+
+    for files in allFiles[20]:
         folderFiles = next(os.walk("../Questioned(1287)/"+files))[2]
+
+
         for signature in folderFiles:
             isGenuine = 1
             if len(signature) > 10:
@@ -85,12 +89,10 @@ if __name__ == "__main__":
                 matrixGradient[0][1][0],4)) + "," + str(round(matrixGradient[0][1][1],4)) + "," + \
                   str(round(matrixGradient[0][2][0],4)) + "," + str(round(matrixGradient[0][2][1],4)) + "," + str(round(
                 matrixGradient[0][3][0],4)) + "," + str(round(matrixGradient[0][3][1],4)) + "," + \
-                  str(round(matrixGradient[0][4][0],4)) + "," + str(round(matrixGradient[0][4][1],4)) + "," + \
                   str(round(matrixGradient[1][0][0],4)) + "," + str(round(matrixGradient[1][0][1],4)) + "," + str(round(
                 matrixGradient[1][1][0],4)) + "," + str(round(matrixGradient[1][1][1],4)) + "," + \
                   str(round(matrixGradient[1][2][0],4)) + "," + str(round(matrixGradient[1][2][1],4)) + "," + str(round(
                 matrixGradient[1][3][0],4)) + "," + str(round(matrixGradient[1][3][1],4)) + "," + \
-                  str(round(matrixGradient[1][4][0],4)) + "," + str(round(matrixGradient[1][4][1],4)) + "," + \
                   str(round(matrixPresure[0][0],4)) + "," + str(round(matrixPresure[0][1],4)) + "," + str(round(matrixPresure[0][2],4)) + "," + \
                   str(round(matrixPresure[0][3],4)) + "," + \
                   str(round(matrixPresure[1][0],4)) + "," + str(round(matrixPresure[1][1],4)) + "," + str(round(
