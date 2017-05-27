@@ -25,7 +25,7 @@ with open('learningBayesian.csv') as f:
 
     print len(reader.next())
     for i in reader:
-        #matrixData.append(map(float,  i[2:len(i)-5]))
+x        #matrixData.append(map(float,  i[2:len(i)-5]))
         matrixData.append(map(float, i[2:5] + i[25:len(i) - 1]))
         vectorTarget.append(int(i[len(i)-1]))
 
