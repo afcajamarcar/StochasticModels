@@ -22,7 +22,7 @@ from sklearn.metrics import accuracy_score
 matrixData = []
 vectorTarget = []
 
-with open('learningBayesianMulticlassGenuine.csv') as f:
+with open('../LearningInformation/learningBayesianMulticlassGenuine.csv') as f:
     readerGenuine = csv.reader(f)
 
     readerGenuine.next()
@@ -32,7 +32,7 @@ with open('learningBayesianMulticlassGenuine.csv') as f:
         vectorTarget.append(int(i[len(i)-1]))
 
 readerForgeries = list()
-with open('learningBayesianMulticlassForgeries.csv') as f:
+with open('../LearningInformation/learningBayesianMulticlassForgeries.csv') as f:
     readerForgeriestmp = csv.reader(f)
     readerForgeriestmp.next()
     readerForgeries = [i for i in readerForgeriestmp]
@@ -68,8 +68,8 @@ print accuracy_score(y_test, y_predict_Naive)
 
 
 ######## Crossvalidation
-scores = cross_val_score(asdsada, matrixData, vectorTarget, cv=10)
+scores = cross_val_score(asdsada, matrixData, vectorTarget, cv=5)
 print("Accuracy SVM: %0.4f (+/- %0.4f)" % (scores.mean(), scores.std() * 2))
 
-scores = cross_val_score(naiveClassifier, matrixData, vectorTarget, cv=10)
+scores = cross_val_score(naiveClassifier, matrixData, vectorTarget, cv=5)
 print("Accuracy Naive: %0.4f (+/- %0.4f)" % (scores.mean(), scores.std() * 2))

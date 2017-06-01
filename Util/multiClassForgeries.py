@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     dataToTrain = {}
 
-    for files in allFiles[:20]:
+    for files in allFiles:
         folderFiles = next(os.walk("../TrainingSet/Offline Forgeries/" + files))[2]
 
         for signature in folderFiles:
