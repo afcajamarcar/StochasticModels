@@ -66,7 +66,7 @@ class TemplateClassifier(BaseEstimator, ClassifierMixin):
                     # matrixData.append(map(float, i[2:5] + i[25:len(i) - 1]))
                     vectorTargetTmp.append(int(i[len(i) - 1]))
 
-            secondClassifier = svm.SVC(kernel='linear', C=0.2).fit(matrixDataTmp, vectorTargetTmp)
+            secondClassifier = svm.SVC(kernel='linear', C=1).fit(matrixDataTmp, vectorTargetTmp)
             prediction = secondClassifier.predict(x)[0]
             if prediction == 1:
                 return y_predict_Naive
@@ -120,14 +120,14 @@ y_predict_best = []
 accuracyFlag = 0
 
 
-for j in range(5):
+for j in range(4):
     # Cross validation
     scores = []
     f1Scores = []
 
     y_predictB = []
     accuracyTmp11 = 0
-    for i in range(5):
+    for i in range(4):
         X_train, X_test, y_train, y_test, y_realTest = [],[],[],[],[]
 
         indexTest = set(split_train(matrixData, vectorTarget))
@@ -150,15 +150,16 @@ for j in range(5):
         if accuracyTmp > accuracyTmp11:
             accuracyTmp11 = accuracyTmp
             y_predictB = y_predict
+            from sklearn.externals import joblib
+            joblib.dump(asdsada, 'HybridModel.pkl')
+
+
 
         scores.append(accuracy_score(y_realTest, y_predict))
         f1Scores.append(f1_score(y_realTest, y_predict, average='weighted'))
 
     accuracyCurrent = np.array(scores).mean()
 
-    if accuracyCurrent > accuracyFlag:
-        accuracyFlag = accuracyCurrent
-        y_predict_best = y_predictB
 
     print("Accuracy Naive: %0.4f (+/- %0.4f)" % (accuracyCurrent, np.array(scores).std() * 2))
     print("F1 Naive: %0.4f (+/- %0.4f)" % (np.array(f1Scores).mean(), np.array(f1Scores).std() * 2))
@@ -167,13 +168,10 @@ for j in range(5):
     totalScores.append(accuracyCurrent)
 
 print
-print
-print("Accuracy Naive: %0.4f (+/- %0.4f)" % (np.array(scores).mean(), np.array(scores).std() * 2))
-print("F1 Naive: %0.4f (+/- %0.4f)" % (np.array(f1Scores).mean(), np.array(f1Scores).std() * 2))
+print("Accuracy Naive: %0.4f (+/- %0.4f)" % (np.array(totalScores).mean(), np.array(totalScores).std() * 2))
+print("F1 Naive: %0.4f (+/- %0.4f)" % (np.array(totalF1Scores).mean(), np.array(totalF1Scores).std() * 2))
 
 
-print y_predict_best
-print y_realTest
 
 ########################################################
 # Plot the confusion matrix
@@ -212,7 +210,7 @@ def plot_confusion_matrix(cm, classes,
     plt.colorbar()
 
 # Compute confusion matrix
-cnf_matrix = confusion_matrix(y_realTest, y_predict_best)
+cnf_matrix = confusion_matrix(y_realTest, y_predict)
 np.set_printoptions(precision=2)
 
 class_names = ['00','01','02','03','04','06','09','12','14','15','16']
@@ -221,7 +219,39 @@ class_names = ['00','01','02','03','04','06','09','12','14','15','16']
 plt.figure()
 plot_confusion_matrix(np.around(cnf_matrix, decimals=3), classes=class_names, normalize=True,
                       title='Normalized confusion matrix')
-plt.show()
+#plt.show()
+
+
+
+
+
+hybridModel = TemplateClassifier().fit(matrixData, vectorTarget)
+
+testData = []
+testLabel = []
+
+with open('test.csv') as f:
+    readerGenuine = csv.reader(f)
+
+    readerGenuine.next()
+    for i in readerGenuine:
+        testData.append(map(float,  i[:len(i)-1]))
+        #matrixData.append(map(float, i[2:5] + i[25:len(i) - 1]))
+        testLabel.append(int(i[len(i)-1]))
+
+y_predict = hybridModel.predict(testData)
+
+print testLabel
+print y_predict
+
+print accuracy_score(testLabel, y_predict)
+print f1_score(testLabel, y_predict, average='weighted')
+
+
+
+
+
+
 
 #scores = cross_val_score(naiveClassifier, matrixData, vectorTarget, cv=5)
 #print("Accuracy Naive: %0.4f (+/- %0.4f)" % (scores.mean(), scores.std() * 2))

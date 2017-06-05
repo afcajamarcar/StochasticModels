@@ -102,9 +102,9 @@ def calculateGradient(blackPoints, imageShape):
 def calculatePressure(imageGrayScale):
 
     matrixPresure = []
-    for i in np.split(imageGrayScale, 5):
+    for i in np.split(imageGrayScale, 4):
         tmpRow = []
-        for j in np.split(i, 5, axis=1):
+        for j in np.split(i, 4, axis=1):
             findPressure = []
             for row in j:
                 for col in row:
