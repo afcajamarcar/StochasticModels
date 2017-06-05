@@ -367,7 +367,7 @@ class Ui_Form(object):
         label = 0
         if len(filename.split('/')[len(filename.split('/'))-1]) < 11:
             label = int(filename.split('/')[len(filename.split('/'))-2])
-        print label
+        # print label
 
         matrixData = []
         vectorTarget = []
@@ -392,17 +392,10 @@ class Ui_Form(object):
         vectorTarget = np.array(vectorTarget)
 
         asdsada = TemplateClassifier().fit(matrixData, vectorTarget)
-        y_predict = asdsada.predict(vectorFeature)[0]
-
-        # print y_predict, label
-
-        if random.random() < .8975:
-            y_predict = label
-        else:
-            y_predict = 0
+        y_predict_X = asdsada.predict(vectorFeature)[0]
 
         self.realLabelText = label
-        self.predicted = y_predict
+        self.predicted = y_predict_X
 
 
 
